@@ -168,18 +168,41 @@ def play():
     board = Board()
     start_first = input("Who start first : you(y) or AI(a)")
     if start_first == "y":
-        for i in range(5):  # for debugging only, it should be while until a winning state
+        #for i in range(5):  # for debugging only, it should be while until a winning state
+        while (utility(board, 'YEL') < 4) or (utility(board, 'RED') < 4):
+            if utility(board, 'YEL') == 4:
+                print('NICE, You Won')
+                break
+            if utility(board, 'RED') == 4:
+                print('Game Over, You Lose')
+                break
             col_num = input("your color is yellow , insert in which column:")
             board.insert(int(col_num), "YEL")
             _, _, next_board = best_board(board, 1, "MAX", -100, 100, "RED")
             board = copy.deepcopy(next_board)
             board.print_board()
     if start_first == "a":  # for debugging only, it should be while until a winning state
-        for i in range(5):
+        #for i in range(5):
+        while (utility(board, 'YEL') < 4) or (utility(board, 'RED') < 4):
+            if utility(board, 'YEL') == 4:
+                print('NICE, You Won')
+                break
+            if utility(board, 'RED') == 4:
+                print('Game Over, You Lose')
+                break
             _, _, next_board = best_board(board, 1, "MAX", -100, 100, "RED")
             board = copy.deepcopy(next_board)
             board.print_board()
             col_num = input("your color is yellow , insert in which column:")
             board.insert(int(col_num), "YEL")
 
-play()
+if __name__ == '__main__':
+    level = input('Choose your level: easy(e) or medium(m) or hard(h)')
+    if level == 'e':
+        MAX_LEVEL = 2
+    if level == 'm':
+        MAX_LEVEL = 3
+    if level == 'h':
+        MAX_LEVEL = 4
+
+    play()
