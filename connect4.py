@@ -168,8 +168,7 @@ def play():
     board = Board()
     start_first = input("Who start first : you(y) or AI(a)")
     if start_first == "y":
-        #for i in range(5):  # for debugging only, it should be while until a winning state
-        while (utility(board, 'YEL') < 4) or (utility(board, 'RED') < 4):
+        while True:
             if utility(board, 'YEL') == 4:
                 print('NICE, You Won')
                 break
@@ -181,9 +180,8 @@ def play():
             _, _, next_board = best_board(board, 1, "MAX", -100, 100, "RED")
             board = copy.deepcopy(next_board)
             board.print_board()
-    if start_first == "a":  # for debugging only, it should be while until a winning state
-        #for i in range(5):
-        while (utility(board, 'YEL') < 4) or (utility(board, 'RED') < 4):
+    if start_first == "a":
+        while True:
             if utility(board, 'YEL') == 4:
                 print('NICE, You Won')
                 break
