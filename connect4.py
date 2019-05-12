@@ -40,7 +40,6 @@ class Board:
             diagonal = []
             x = 0
             for j in range(i, 7):
-                print(self.board[x])
                 diagonal.append(self.board[x][j])
                 x += 1
             diagonals_list.append(diagonal)
