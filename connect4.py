@@ -34,6 +34,40 @@ class Board:
             col.append(row[col_num])
         return col
 
+    def get_possible_diag(self):
+        diagonals_list = []
+        for i in range(1,4):
+            diagonal = []
+            x = 0
+            for j in range(i, 7):
+                print(self.board[x])
+                diagonal.append(self.board[x][j])
+                x += 1
+            diagonals_list.append(diagonal)
+        for i in range(0,3):
+            x = 0
+            diagonal = []
+            for j in range(i, 6):
+                diagonal.append(self.board[j][x])
+                x += 1
+            diagonals_list.append(diagonal)
+
+        for i in range(4,6):
+            diagonal = []
+            x = 0
+            for j in range(i,-1, -1):
+                diagonal.append(self.board[x][j])
+                x += 1
+            diagonals_list.append(diagonal)
+        for i in range(0,3):
+            x = 6
+            diagonal = []
+            for j in range(i, 6):
+                diagonal.append(self.board[j][x])
+                x -= 1
+            diagonals_list.append(diagonal)
+        return diagonals_list
+
     def insert(self, col_num, item_color):
         """
         insert an item of specific color in a specific column.
@@ -85,10 +119,16 @@ def utility(board_object, item_color):
         utility = connected_items_in_row if connected_items_in_row > utility else utility
 
     # vertical connected items
-    pass
-    # diagonal connected items 
-    pass
-    # utility is the maximum number of connected items in all dirctions
+    for index in range(0,7):
+        connected_items_in_column = connected_items_in_list(board_object.get_col(index), item_color)
+        utility = connected_items_in_column if connected_items_in_column > utility else utility
+
+    # diagonal connected items
+
+    for diag in board_object.get_possible_diag():
+        connected_items_in_diag = connected_items_in_list(diag, item_color)
+        utility = connected_items_in_diag if connected_items_in_diag > utility else utility
+    # utility is the maximum number of connected items in all directions
     pass
     return utility
 
@@ -202,5 +242,4 @@ if __name__ == '__main__':
         MAX_LEVEL = 3
     if level == 'h':
         MAX_LEVEL = 4
-
     play()
