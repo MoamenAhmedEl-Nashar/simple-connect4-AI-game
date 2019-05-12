@@ -104,7 +104,7 @@ def connected_items_in_list(items_list, item_color):
     return max_connected_num
 
 
-def utility(board_object, item_color):
+def connected_items_in_board(board_object, item_color):
     """
     this function calculates the utility of any board state.
     inputs:
@@ -135,6 +135,22 @@ def utility(board_object, item_color):
     return utility
 
 
+def utility(board_object, item_color):
+    """
+    this function calculates the utility of any board state.
+    inputs:
+    board_object : the board state
+    item_color : "RED" or "YEL"
+    outputs:
+    utility : integer between 
+    
+    """
+    
+    utility = connected_items_in_board(board_object, "item_color")
+    
+    return utility
+
+
 def get_possible_boards(board_object, item_color):
     """
     this function gets all possible moves from a given board state.
@@ -156,7 +172,7 @@ def get_possible_boards(board_object, item_color):
     return possible_boards
 
 
-def best_board(initial_board_object, level, type, alpha, beta, item_color):
+def best_board(initial_board_object, level, type, alpha, beta, item_color, root_item_color):
     """
     this function simulates the mini-max with alpha-beta pruning algorithm,
     with depth first search.
@@ -176,7 +192,7 @@ def best_board(initial_board_object, level, type, alpha, beta, item_color):
     possible_boards = get_possible_boards(initial_board_object, item_color)
     if level == MAX_LEVEL:
         for board_object in possible_boards:
-            util = utility(board_object, item_color)
+            util = utility(board_object, root_item_color)
             if type == "MIN":
                 if util < beta:
                     beta = util
@@ -191,8 +207,8 @@ def best_board(initial_board_object, level, type, alpha, beta, item_color):
         for board_object in possible_boards:
             new_level = level + 1
             new_type = "MIN" if type == "MAX" else "MAX"
-            # new_item_color = "YEL" if item_color == "RED" else "RED"
-            child_alpha, child_beta, _ = best_board(board_object, new_level, new_type, alpha, beta, item_color)
+            new_item_color = "YEL" if item_color == "RED" else "RED"
+            child_alpha, child_beta, _ = best_board(board_object, new_level, new_type, alpha, beta, new_item_color, root_item_color)
             if type == "MAX" and alpha < child_beta:
                 alpha = child_beta
                 next_board_object = copy.deepcopy(board_object)
@@ -211,26 +227,26 @@ def play():
     start_first = input("Who start first : you(y) or AI(a)")
     if start_first == "y":
         while True:
-            if utility(board, 'YEL') == 4:
+            if connected_items_in_board(board, 'YEL') == 4:
                 print('NICE, You Won')
                 break
-            if utility(board, 'RED') == 4:
+            if connected_items_in_board(board, 'RED') == 4:
                 print('Game Over, You Lose')
                 break
             col_num = input("your color is yellow , insert in which column:")
             board.insert(int(col_num), "YEL")
-            _, _, next_board = best_board(board, 1, "MAX", -100, 100, "RED")
+            _, _, next_board = best_board(board, 1, "MAX", -100, 100, "RED", "RED")
             board = copy.deepcopy(next_board)
             board.print_board()
     if start_first == "a":
         while True:
-            _, _, next_board = best_board(board, 1, "MAX", -100, 100, "RED")
+            _, _, next_board = best_board(board, 1, "MAX", -100, 100, "RED", "RED")
             board = copy.deepcopy(next_board)
             board.print_board()
-            if utility(board, 'YEL') == 4:
+            if connected_items_in_board(board, 'YEL') == 4:
                 print('NICE, You Won')
                 break
-            if utility(board, 'RED') == 4:
+            if connected_items_in_board(board, 'RED') == 4:
                 print('Game Over, You Lose')
                 break
             col_num = input("your color is yellow , insert in which column:")
