@@ -23,6 +23,7 @@ class Board:
         """
         print board in a suitable shape on the console.
         """
+        print("< 0 > < 1 > < 2 > < 3 > < 4 > < 5 > < 6 >")
         for row in self.board:
             print(row)
         print("-----------------------------------------")
@@ -149,6 +150,8 @@ def get_possible_boards(board_object, item_color):
         moved_board_object = copy.deepcopy(board_object)
         col = moved_board_object.get_col(i)
         moved_board_object.insert(i, item_color)
+        if moved_board_object.board == board_object.board:  # col is complete
+            continue
         possible_boards.append(moved_board_object)
     return possible_boards
 
