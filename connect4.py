@@ -142,12 +142,13 @@ def utility(board_object, item_color):
     board_object : the board state
     item_color : "RED" or "YEL"
     outputs:
-    utility : integer between 
+    utility : integer between 0, 4
     
     """
-    
-    utility = connected_items_in_board(board_object, "item_color")
-    
+    vs_item_color = "YEL" if item_color == "RED" else "RED"
+    utility = connected_items_in_board(board_object, item_color)
+    if connected_items_in_board(board_object, vs_item_color) == 4:
+        utility = 0
     return utility
 
 
@@ -196,13 +197,16 @@ def best_board(initial_board_object, level, type, alpha, beta, item_color, root_
             if type == "MIN":
                 if util < beta:
                     beta = util
+                    next_board_object = copy.deepcopy(board_object)
                 if beta <= alpha:  # cut-off
                     break
             elif type == "MAX":
                 if util > alpha:
                     alpha = util
+                    next_board_object = copy.deepcopy(board_object)
                 if beta <= alpha:  # cut-off
                     break
+            
     if level < MAX_LEVEL:
         for board_object in possible_boards:
             new_level = level + 1
@@ -226,38 +230,43 @@ def play():
     board = Board()
     start_first = input("Who start first : you(y) or AI(a)")
     if start_first == "y":
+        board.print_board()
         while True:
-            if connected_items_in_board(board, 'YEL') == 4:
-                print('NICE, You Won')
-                break
-            if connected_items_in_board(board, 'RED') == 4:
-                print('Game Over, You Lose')
-                break
             col_num = input("your color is yellow , insert in which column:")
             board.insert(int(col_num), "YEL")
+            if connected_items_in_board(board, 'YEL') == 4:
+                board.print_board()
+                print('NICE, You Won')
+                break
             _, _, next_board = best_board(board, 1, "MAX", -100, 100, "RED", "RED")
             board = copy.deepcopy(next_board)
+            if connected_items_in_board(board, 'RED') == 4:
+                board.print_board()
+                print('Game Over, You Lose')
+                break
             board.print_board()
     if start_first == "a":
         while True:
             _, _, next_board = best_board(board, 1, "MAX", -100, 100, "RED", "RED")
             board = copy.deepcopy(next_board)
-            board.print_board()
-            if connected_items_in_board(board, 'YEL') == 4:
-                print('NICE, You Won')
-                break
             if connected_items_in_board(board, 'RED') == 4:
+                board.print_board()
                 print('Game Over, You Lose')
                 break
+            board.print_board()
             col_num = input("your color is yellow , insert in which column:")
             board.insert(int(col_num), "YEL")
+            if connected_items_in_board(board, 'YEL') == 4:
+                board.print_board()
+                print('NICE, You Won')
+                break
 
 
 if __name__ == '__main__':
     while True:
         level = input('Choose your level: easy(e) or medium(m) or hard(h)')
         if level == 'e':
-            MAX_LEVEL = 2
+            MAX_LEVEL = 1
         if level == 'm':
             MAX_LEVEL = 3
         if level == 'h':
