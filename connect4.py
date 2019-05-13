@@ -1,9 +1,10 @@
 import copy
 import time
 
+# Global variables initiation
 MAX_LEVEL = 2
 TIME_LIMIT = 10
-# Global variables initiation
+
 
 class Board:
     """
@@ -32,7 +33,7 @@ class Board:
 
     def get_col(self, col_num):
         """
-        return a list that contains a specif column in the board
+        return a list that contains a specific column in the board
         column 0 is the most left one.
         """
         col = []
@@ -41,6 +42,9 @@ class Board:
         return col
 
     def get_possible_diag(self):
+        """
+        returns a list contains all possible diagonal items in the board.
+        """
         diagonals_list = []
         for i in range(1, 4):
             diagonal = []
@@ -108,8 +112,9 @@ def connected_items_in_list(items_list, item_color):
 
 def connected_items_in_board(board_object, item_color):
     """
-    this function calculates the utility of any board state.
-    inputs:
+    this is a helper function that used in utility function.
+    it counts the maximum number of connected items of specific color in a board state.
+    inputs :
     board_object : the board state
     item_color : "RED" or "YEL"
     outputs:
@@ -224,6 +229,7 @@ def best_board(initial_board_object, level, type, alpha, beta, item_color, root_
                 next_board_object = copy.deepcopy(board_object)
     return alpha, beta, next_board_object
 
+
 def best_board_Iterative_Deepening(initial_board_object, level, type, alpha, beta, item_color, root_item_color):
     """
     this function simulates the mini-max with alpha-beta pruning algorithm,
@@ -247,8 +253,6 @@ def best_board_Iterative_Deepening(initial_board_object, level, type, alpha, bet
         if (int(end - start) >= (TIME_LIMIT - 2)) or (connected_items_in_board(next_board, 'RED') == 4):
             return next_board
         MAX_LEVEL += 1
-
-
 
 
 def play_PlayNOW_mode():
