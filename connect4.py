@@ -2,7 +2,7 @@ import copy
 import time
 
 MAX_LEVEL = 2
-TIME_LIMIT = 10 
+TIME_LIMIT = 10
 # Global variables initiation
 
 class Board:
@@ -244,9 +244,6 @@ def best_board_Iterative_Deepening(initial_board_object, level, type, alpha, bet
         start = time.time()
         _, _, next_board = best_board(initial_board_object, level, type, alpha, beta, item_color, root_item_color)
         end = time.time()
-        print(int(end - start))
-        print(MAX_LEVEL)
-        #print(connected_items_in_board(next_board, 'RED'))
         if (int(end - start) >= (TIME_LIMIT - 2)) or (connected_items_in_board(next_board, 'RED') == 4):
             return next_board
         MAX_LEVEL += 1
