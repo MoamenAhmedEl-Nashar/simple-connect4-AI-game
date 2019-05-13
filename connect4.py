@@ -2,8 +2,8 @@ import copy
 import time
 
 MAX_LEVEL = 2
-TIME_LIMIT = 10
-
+TIME_LIMIT = 10 
+# Global variables initiation
 
 class Board:
     """
@@ -225,6 +225,20 @@ def best_board(initial_board_object, level, type, alpha, beta, item_color, root_
     return alpha, beta, next_board_object
 
 def best_board_Iterative_Deepening(initial_board_object, level, type, alpha, beta, item_color, root_item_color):
+    """
+    this function simulates the mini-max with alpha-beta pruning algorithm,
+    with iterative deepening search.
+    inputs:
+    initial_board_object : root of the search tree.
+    level : it should always be 1 at beginning , but recursive calls will increase
+    it until reach maximum level.
+    type : Maximizer node or Minimizer node
+    alpha : alpha is for the alpha-beta pruning algorithm.
+    beta : beta is for the alpha-beta pruning algorithm.
+    item_color : "RED" or "YEL"
+    outputs:
+    next_board_object : the best next state to move to.
+    """
     global MAX_LEVEL
     while True:
         start = time.time()
