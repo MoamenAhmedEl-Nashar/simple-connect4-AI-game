@@ -1,6 +1,8 @@
 import copy
+import time
 
 MAX_LEVEL = 2
+TIME_LIMIT = 10
 
 
 class Board:
@@ -44,7 +46,7 @@ class Board:
             diagonal = []
             x = 0
             for j in range(i, 7):
-                #print(self.board[x])
+                # print(self.board[x])
                 diagonal.append(self.board[x][j])
                 x += 1
             diagonals_list.append(diagonal)
@@ -143,7 +145,7 @@ def utility(board_object, item_color):
     item_color : "RED" or "YEL"
     outputs:
     utility : integer between 0, 4
-    
+
     """
     vs_item_color = "YEL" if item_color == "RED" else "RED"
     utility = connected_items_in_board(board_object, item_color)
@@ -206,13 +208,14 @@ def best_board(initial_board_object, level, type, alpha, beta, item_color, root_
                     next_board_object = copy.deepcopy(board_object)
                 if beta <= alpha:  # cut-off
                     break
-            
+
     if level < MAX_LEVEL:
         for board_object in possible_boards:
             new_level = level + 1
             new_type = "MIN" if type == "MAX" else "MAX"
             new_item_color = "YEL" if item_color == "RED" else "RED"
-            child_alpha, child_beta, _ = best_board(board_object, new_level, new_type, alpha, beta, new_item_color, root_item_color)
+            child_alpha, child_beta, _ = best_board(board_object, new_level, new_type, alpha, beta, new_item_color,
+                                                    root_item_color)
             if type == "MAX" and alpha < child_beta:
                 alpha = child_beta
                 next_board_object = copy.deepcopy(board_object)
@@ -221,8 +224,23 @@ def best_board(initial_board_object, level, type, alpha, beta, item_color, root_
                 next_board_object = copy.deepcopy(board_object)
     return alpha, beta, next_board_object
 
+def best_board_Iterative_Deepening(initial_board_object, level, type, alpha, beta, item_color, root_item_color):
+    global MAX_LEVEL
+    while True:
+        start = time.time()
+        _, _, next_board = best_board(initial_board_object, level, type, alpha, beta, item_color, root_item_color)
+        end = time.time()
+        print(int(end - start))
+        print(MAX_LEVEL)
+        #print(connected_items_in_board(next_board, 'RED'))
+        if (int(end - start) >= (TIME_LIMIT - 2)) or (connected_items_in_board(next_board, 'RED') == 4):
+            return next_board
+        MAX_LEVEL += 1
 
-def play():
+
+
+
+def play_PlayNOW_mode():
     """
     this is the main function that controls the game playing .
     it has no inputs or outputs.
@@ -262,20 +280,73 @@ def play():
                 break
 
 
+def play_Time_Mode():
+    """
+    this is the main function that controls the game playing .
+    it has no inputs or outputs.
+    """
+    board = Board()
+    start_first = input("Who start first : you(y) or AI(a)")
+    if start_first == "y":
+        board.print_board()
+        while True:
+            col_num = input("your color is yellow , insert in which column:")
+            board.insert(int(col_num), "YEL")
+            if connected_items_in_board(board, 'YEL') == 4:
+                board.print_board()
+                print('NICE, You Won')
+                break
+            next_board = best_board_Iterative_Deepening(board, 1, "MAX", -100, 100, "RED", "RED")
+            board = copy.deepcopy(next_board)
+            if connected_items_in_board(board, 'RED') == 4:
+                board.print_board()
+                print('Game Over, You Lose')
+                break
+            board.print_board()
+    if start_first == "a":
+        while True:
+            next_board = best_board_Iterative_Deepening(board, 1, "MAX", -100, 100, "RED", "RED")
+            board = copy.deepcopy(next_board)
+            if connected_items_in_board(board, 'RED') == 4:
+                board.print_board()
+                print('Game Over, You Lose')
+                break
+            board.print_board()
+            col_num = input("your color is yellow , insert in which column:")
+            board.insert(int(col_num), "YEL")
+            if connected_items_in_board(board, 'YEL') == 4:
+                board.print_board()
+                print('NICE, You Won')
+                break
+
+
 if __name__ == '__main__':
     while True:
-        level = input('Choose your level: easy(e) or medium(m) or hard(h)')
-        if level == 'e':
-            MAX_LEVEL = 1
-        if level == 'm':
-            MAX_LEVEL = 3
-        if level == 'h':
-            MAX_LEVEL = 4
-        play()
-        print('\nIt was a Good Game, See You later :)\n')
-        again = input('Play again now? YES(y) or NO(n)')
-        if again == 'y':
-            print('\n')
-            continue
-        if again == 'n':
-            break
+        mode = input('Choose Mode: TimeLimit(t) or PlayNow(p)')
+        if mode == 'p':
+            level = input('Choose your level: easy(e) or medium(m) or hard(h)')
+            if level == 'e':
+                MAX_LEVEL = 1
+            if level == 'm':
+                MAX_LEVEL = 3
+            if level == 'h':
+                MAX_LEVEL = 4
+            play_PlayNOW_mode()
+            print('\nIt was a Good Game, See You later :)\n')
+            again = input('Play again now? YES(y) or NO(n)')
+            if again == 'y':
+                print('\n')
+                continue
+            if again == 'n':
+                break
+        if mode == 't':
+            timeLimit = input('Enter the time limit 2 or more seconds: ')
+            TIME_LIMIT = int(timeLimit)
+            play_Time_Mode()
+            print('\nIt was a Good Game, See You later :)\n')
+            again = input('Play again now? YES(y) or NO(n)')
+            if again == 'y':
+                print('\n')
+                continue
+            if again == 'n':
+                break
